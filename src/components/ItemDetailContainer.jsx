@@ -1,8 +1,10 @@
 import React from 'react'
-import ItemList from './ItemList';
 import { Grid } from '@chakra-ui/react';
+import ItemDetail from './ItemDetail';
+import { useParams } from 'react-router-dom';
 
-const ItemListContainer = ({name}) => {
+
+const ItemDetailContainer = () => {
 
     const products = [
         { id:1, name:"Producto A", price:1000, description:"Descripción", category:"A", stock:100},
@@ -35,9 +37,9 @@ const ItemListContainer = ({name}) => {
 
     return (
         <Grid templateColumns='repeat(4, 1fr)' gap={10} m='10'>
-            <ItemList products={products} />
+            <ItemDetail products={products} />
         </Grid>
     )
 }
 
-export default ItemListContainer
+export default ItemDetailContainer
