@@ -4,8 +4,6 @@ import ItemDetailContainer from "./components/ItemDetailContainer"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Cart from "./components/Cart"
 
-// Uso de useParams => ItemListContainer(categoría) y ItemDetail(id)
-
 const App = () => {
 
   return (
@@ -24,6 +22,7 @@ const App = () => {
         </Routes>
       
       </BrowserRouter>
+
     </>
   )
 }

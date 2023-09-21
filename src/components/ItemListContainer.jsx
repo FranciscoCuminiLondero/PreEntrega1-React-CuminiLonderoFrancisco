@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import ItemList from './ItemList';
 import { Grid } from '@chakra-ui/react';
+import { useParams } from 'react-router-dom';
 
-const ItemListContainer = ({name}) => {
+const ItemListContainer = () => {
+    const { id } = useParams();
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [allProducts, setAllProducts] = useState([]);
 
     const products = [
         { id:1, name:"Producto A", price:1000, description:"Descripción", category:"A", stock:100},
@@ -15,29 +19,37 @@ const ItemListContainer = ({name}) => {
         { id:8, name:"Producto I", price:2000, description:"Descripción", category:"A", stock:150}
     ]
 
-    const mostrarProductos = new Promise((resolve, reject) => {
-        if(products.length > 0) {
-            setTimeout(() => {
-                resolve("Productos cargados")
-            }, 2000)
-        } else {
-            reject("No se pueden mostrar los productos")
-        }
-    });
+    useEffect(() => {
+        const mostrarProductos = new Promise((resolve, reject) => {
+            if (products.length > 0) {
+                setTimeout(() => {
+                    if (id) {
+                        const filtered = products.filter(product => product.category === id);
+                        setFilteredProducts(filtered);
+                        resolve(filtered);
+                    } else {
+                        resolve(products);
+                    }
+                }, 2000);
+            } else {
+                reject("No se pueden mostrar los productos");
+            }
+        });
 
-    mostrarProductos
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+        mostrarProductos
+            .then((res) => {
+                setAllProducts(res);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, [id, products]);
 
     return (
         <Grid templateColumns='repeat(4, 1fr)' gap={10} m='10'>
-            <ItemList products={products} />
+            <ItemList products={id ? filteredProducts : allProducts} />
         </Grid>
-    )
-}
+    );
+};
 
-export default ItemListContainer
+export default ItemListContainer;

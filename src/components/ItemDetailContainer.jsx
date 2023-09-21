@@ -1,10 +1,11 @@
-import React from 'react'
-import { Grid } from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
 import ItemDetail from './ItemDetail';
+import { Grid } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
-
 const ItemDetailContainer = () => {
+    const { id } = useParams();
+    const [product, setProduct] = useState(null);
 
     const products = [
         { id:1, name:"Producto A", price:1000, description:"Descripción", category:"A", stock:100},
@@ -17,29 +18,39 @@ const ItemDetailContainer = () => {
         { id:8, name:"Producto I", price:2000, description:"Descripción", category:"A", stock:150}
     ]
 
-    const mostrarProductos = new Promise((resolve, reject) => {
-        if(products.length > 0) {
-            setTimeout(() => {
-                resolve("Productos cargados")
-            }, 2000)
-        } else {
-            reject("No se pueden mostrar los productos")
-        }
-    });
-
-    mostrarProductos
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+    useEffect(() => {
+        const mostrarProducto = new Promise((resolve, reject) => {
+            if (products.length > 0) {
+                if (id) {
+                    const productFound = products.find(product => product.id.toString() === id);
+                    if (productFound) {
+                        setProduct(productFound);
+                        resolve(productFound);
+                    } else {
+                        reject("Producto no encontrado");
+                    }
+                } else {
+                    reject("ID de producto no proporcionado");
+                }
+            } else {
+                reject("No se pueden mostrar los productos");
+            }
+        });
+    
+        mostrarProducto
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []); 
 
     return (
-        <Grid templateColumns='repeat(4, 1fr)' gap={10} m='10'>
-            <ItemDetail products={products} />
+        <Grid templateColumns='repeat(1, 1fr)' gap={10} m='10'>
+            {product ? <ItemDetail product={product} /> : <p> Producto no encontrado</p>}
         </Grid>
-    )
-}
+    );
+};
 
-export default ItemDetailContainer
+export default ItemDetailContainer;
